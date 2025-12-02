@@ -1,0 +1,117 @@
+name: Comp Unit Tests
+
+on:
+  push:
+    branches: [ main ]
+    path-ignores:
+      - 'experiments/**'
+      - 'studies/**'
+  pull_request:
+    branches: [ main ]
+    path-ignores:
+      - 'experiments/**'
+      - 'studies/**'
+
+jobs:
+  discover-changed-folders:
+    runs-on: ubuntu-latest
+    outputs:
+      years: ${{ steps.detect.outputs.years }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed to compare changes
+
+      - id: detect
+        run: |
+          echo "🔍 Detecting changed year folders inside comp/..."
+
+          # Get all changed files for PR or push
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            CHANGED=$(git diff --name-only origin/${{ github.base_ref }} HEAD)
+          else
+            CHANGED=$(git diff --name-only HEAD~1 HEAD)
+          fi
+
+          echo "Changed files:"
+          echo "$CHANGED"
+
+          # Extract unique year folder names from comp/YYYY/*
+          YEARS=$(echo "$CHANGED" | grep -E '^comp/[0-9]{4}/' | cut -d/ -f2 | sort -u)
+
+          # Filter out any folders missing gradlew
+          VALIDYEARS=""
+          for Y in $YEARS; do
+            if [ -f "comp/$Y/gradlew" ]; then
+              VALIDYEARS="$VALIDYEARS $Y"
+            else
+              echo "Skipping comp/$Y (no gradlew found)"
+            fi
+          done
+
+          # Sort newest → oldest (numeric descending)
+          SORTED=$(echo $VALIDYEARS | tr ' ' '\n' | sort -r | jq -R . | jq -s .)
+
+          # If no folders changed, send empty list (so matrix job is skipped)
+          if [ -z "$SORTED" ] || [ "$SORTED" = "[]" ]; then
+            echo "No year folders changed. Exiting."
+            SORTED="[]"
+          fi
+
+          echo "years=$SORTED" >> "$GITHUB_OUTPUT"
+          echo "Detected year list: $SORTED"
+
+  build:
+    needs: discover-changed-folders
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        year: ${{ fromJson(needs.discover-changed-folders.outputs.years) }}
+      max-parallel: 3
+      fail-fast: false
+
+    if: ${{ needs.discover-changed-folders.outputs.years != '[]' }}
+
+    defaults:
+      run:
+        working-directory: ./comp/${{ matrix.year }}
+
+    container: wpilib/roborio-cross-ubuntu:2024-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add repository to git safe directories
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain
+
+      - name: Upload Checkstyle report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkstyle-report-${{ matrix.year }}
+          path: build/reports/checkstyle/
+
+      - name: Compile and run tests
+        run: ./gradlew build
+
+      - name: Run unit tests
+        run: ./gradlew test
+
+      - name: Generate Docs
+        run: ./gradlew javadoc
+
+      - name: Upload Javadocs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: javadocs-${{ matrix.year }}
+          path: build/docs/javadoc

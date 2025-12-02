@@ -13,67 +13,29 @@ on:
       - 'studies/**'
 
 jobs:
-  discover-changed-folders:
+  discover-folders:
     runs-on: ubuntu-latest
     outputs:
       years: ${{ steps.detect.outputs.years }}
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Needed to compare changes
 
+      # Detect folders inside comp/ that are 4-digit numbers
       - id: detect
         run: |
-          echo "🔍 Detecting changed year folders inside comp/..."
-
-          # Get all changed files for PR or push
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            CHANGED=$(git diff --name-only origin/${{ github.base_ref }} HEAD)
-          else
-            CHANGED=$(git diff --name-only HEAD~1 HEAD)
-          fi
-
-          echo "Changed files:"
-          echo "$CHANGED"
-
-          # Extract unique year folder names from comp/YYYY/*
-          YEARS=$(echo "$CHANGED" | grep -E '^comp/[0-9]{4}/' | cut -d/ -f2 | sort -u)
-
-          # Filter out any folders missing gradlew
-          VALIDYEARS=""
-          for Y in $YEARS; do
-            if [ -f "comp/$Y/gradlew" ]; then
-              VALIDYEARS="$VALIDYEARS $Y"
-            else
-              echo "Skipping comp/$Y (no gradlew found)"
-            fi
-          done
-
-          # Sort newest → oldest (numeric descending)
-          SORTED=$(echo $VALIDYEARS | tr ' ' '\n' | sort -r | jq -R . | jq -s .)
-
-          # If no folders changed, send empty list (so matrix job is skipped)
-          if [ -z "$SORTED" ] || [ "$SORTED" = "[]" ]; then
-            echo "No year folders changed. Exiting."
-            SORTED="[]"
-          fi
-
-          echo "years=$SORTED" >> "$GITHUB_OUTPUT"
-          echo "Detected year list: $SORTED"
+          YEARS=$(ls -d comp/[0-9][0-9][0-9][0-9] 2>/dev/null | sed 's#comp/##' | jq -R . | jq -s .)
+          echo "Detected year folders: $YEARS"
+          echo "years=$YEARS" >> "$GITHUB_OUTPUT"
 
   build:
-    needs: discover-changed-folders
+    needs: discover-folders
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     strategy:
       matrix:
-        year: ${{ fromJson(needs.discover-changed-folders.outputs.years) }}
-      max-parallel: 3
-      fail-fast: false
-
-    if: ${{ needs.discover-changed-folders.outputs.years != '[]' }}
+        year: ${{ fromJson(needs.discover-folders.outputs.years) }}
 
     defaults:
       run:
@@ -103,7 +65,7 @@ jobs:
       - name: Compile and run tests
         run: ./gradlew build
 
-      - name: Run unit tests
+      - name: Run test suite
         run: ./gradlew test
 
       - name: Generate Docs

@@ -52,4 +52,16 @@ public class LogitechController {
     public void updateControllerAlerts() {
         controllerUnpluggedAlert.set(!controller.isConnected());
     }
+    public Trigger getPovUp(){
+        return controller.povUp();
+    }
+    public Trigger getPovDown(){
+        return controller.povDown();
+    }
+    public Trigger getPovLeft(){
+        return controller.povLeft();
+    }
+    public Trigger getPovRight(){
+        return controller.povRight();
+    }
 }

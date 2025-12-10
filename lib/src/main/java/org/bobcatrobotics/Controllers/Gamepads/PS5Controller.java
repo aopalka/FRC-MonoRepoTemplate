@@ -50,4 +50,32 @@ public class PS5Controller implements ControllerBase{
     public void updateControllerAlerts() {
         controllerUnpluggedAlert.set(!controller.isConnected());
     }
+    public Trigger getPovUp(){
+        int pov = controller.getPOV();
+        if(pov == 0){
+            return new Trigger(()-> true);
+        }
+        return new Trigger(()-> false);
+    }
+    public Trigger getPovDown(){
+        int pov = controller.getPOV();
+        if(pov == 180){
+            return new Trigger(()-> true);
+        }
+        return new Trigger(()-> false);
+    }
+    public Trigger getPovLeft(){
+        int pov = controller.getPOV();
+        if(pov == 90){
+            return new Trigger(()-> true);
+        }
+        return new Trigger(()-> false);
+    }
+    public Trigger getPovRight(){
+        int pov = controller.getPOV();
+        if(pov == 270){
+            return new Trigger(()-> true);
+        }
+        return new Trigger(()-> false);
+    }
 }

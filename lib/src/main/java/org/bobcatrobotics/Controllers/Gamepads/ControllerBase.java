@@ -12,5 +12,9 @@ public interface ControllerBase {
     Trigger getRightTrigger();
     Trigger getLeftBumper();
     Trigger getRightBumper();
+    Trigger getPovUp();
+    Trigger getPovDown();
+    Trigger getPovLeft();
+    Trigger getPovRight();
     void updateControllerAlerts();
 }

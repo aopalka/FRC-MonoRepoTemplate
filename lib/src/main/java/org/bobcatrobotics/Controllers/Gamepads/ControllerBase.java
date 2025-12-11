@@ -7,7 +7,7 @@ public interface ControllerBase {
     double getLeftY();
     double getRightX();
     double getRightY();
-    Trigger getButton( int map );
+    Trigger getButton( String buttonName );
     Trigger getLeftTrigger();
     Trigger getRightTrigger();
     Trigger getLeftBumper();

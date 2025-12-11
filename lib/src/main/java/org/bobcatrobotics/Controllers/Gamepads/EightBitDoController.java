@@ -1,28 +1,35 @@
 package org.bobcatrobotics.Controllers.Gamepads;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
 public class EightBitDoController  implements ControllerBase{
     CommandJoystick controller;
     private final Alert controllerUnpluggedAlert;
+    private Map<String , Integer> buttonMap = new HashMap<>();
+
     public EightBitDoController(int port, String name){
         controllerUnpluggedAlert =
         new Alert(name + " Joystick unplugged!", AlertType.kWarning);
         controller = new CommandJoystick(port);
+        buttonMap = Map.ofEntries(
+            Map.entry("A",2),
+            Map.entry("B",1),
+            Map.entry("X",4),
+            Map.entry("Y",3),
+            Map.entry("Select",7),
+            Map.entry("Start",8)
+        );
     }
-    public Trigger getButton(int map){
-        return switch (map) {
-            case 2  -> controller.button(2);  // a
-            case 1  -> controller.button(1);  // b
-            case 4  -> controller.button(4);  // x
-            case 3  -> controller.button(3);  // y
-            case 7  -> controller.button(7);  // select
-            case 8  -> controller.button(8);  // start
-            default -> new Trigger(()-> false);
-        };
+    public Trigger getButton(String buttonName){
+        return controller.button(buttonMap.get(buttonName).intValue());
     }
     public Trigger getLeftTrigger(){
         return controller.button(9);

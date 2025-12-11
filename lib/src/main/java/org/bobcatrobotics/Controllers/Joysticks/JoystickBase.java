@@ -3,7 +3,7 @@ package org.bobcatrobotics.Controllers.Joysticks;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public interface JoystickBase {
-    Trigger getRawButton(int map);
+    Trigger getRawButton(String buttonName);
     double getStickX();
     double getStickY();
     double getStickZ();

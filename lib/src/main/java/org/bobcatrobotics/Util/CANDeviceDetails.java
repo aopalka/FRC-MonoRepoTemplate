@@ -1,4 +1,4 @@
-package org.bobcatrobotics.lib.util;
+package org.bobcatrobotics.Util;
 
 
 import java.util.Objects;

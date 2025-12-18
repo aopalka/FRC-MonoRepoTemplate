@@ -36,8 +36,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-
-import org.bobcatrobotics.lib.util.*;
+import org.bobcatrobotics.Commands.ActionFactory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -121,11 +120,11 @@ public class RobotContainer {
         () -> -controller.getLeftX(), () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    controller.x().onTrue(new ActionFactory().singleAction("X-Command",()->drive.stopWithX(),drive));
 
     // Reset gyro to 0° when B button is pressed
     controller.b()
-        .onTrue(Commands.runOnce(
+        .onTrue(new ActionFactory().singleAction("ZeroGyroCommand", 
             () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
             drive).ignoringDisable(true));
   }

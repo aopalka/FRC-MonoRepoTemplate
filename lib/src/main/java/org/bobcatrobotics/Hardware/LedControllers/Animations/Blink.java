@@ -2,19 +2,18 @@ package org.bobcatrobotics.Hardware.LedControllers.Animations;
 
 import java.util.function.BooleanSupplier;
 import org.bobcatrobotics.Hardware.LedControllers.LedControllerIO;
-import org.bobcatrobotics.Hardware.LedControllers.LedStrip;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
-public class Pulse implements Animation {
+public class Blink implements Animation {
     public boolean isFinished = false;
     LedControllerIO ledController;
     long startTimeMs = 0;
     private Color color;
     private long period;
 
-    public Pulse(LedControllerIO ledController, Color color, long period) {
+    public Blink(LedControllerIO ledController, Color color, long period) {
         this.ledController = ledController;
         this.color = color;
         this.startTimeMs = System.currentTimeMillis();

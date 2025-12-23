@@ -15,7 +15,7 @@ public class LedController extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("CANdle", inputs);
+        Logger.processInputs("Led Controller", inputs);
     }
 
     public void setLEDs(int r, int g, int b, int w, int startIdx, int endIdx) {

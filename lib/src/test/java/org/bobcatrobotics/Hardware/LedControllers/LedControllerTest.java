@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.function.BooleanSupplier;
 import org.bobcatrobotics.Hardware.LedControllers.Animations.Breathe;
-import org.bobcatrobotics.Hardware.LedControllers.Animations.Pulse;
+import org.bobcatrobotics.Hardware.LedControllers.Animations.Blink;
 
 public class LedControllerTest {
 
@@ -68,12 +68,12 @@ public class LedControllerTest {
 
 
     @Test
-    void testPulseWithTimeoutAnimation() {
+    void testBlinkWithTimeoutAnimation() {
         LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
         LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
-        var animateLed = new Pulse(candle, new Color(255,255,255),5);
+        var animateLed = new Blink(candle, new Color(255,255,255),5);
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.withTimeout(60);
         test.schedule();
@@ -88,13 +88,13 @@ public class LedControllerTest {
     }
 
     @Test
-    void testPulseUntilAnimation() {
+    void testBlinkUntilAnimation() {
         BooleanSupplier condition = () -> true;
         LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
         LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
-        var animateLed = new Pulse(candle, new Color(255,255,255),5);
+        var animateLed = new Blink(candle, new Color(255,255,255),5);
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.untill(condition);
         test.schedule();
@@ -103,11 +103,11 @@ public class LedControllerTest {
         advanceTime(scheduler, 0.5);
         assertFalse(animateLed.isRunning(), "Command ended too early");
 
-        // Run past 2.0 seconds → should finish
+        // Run past 5.0 seconds → should finish
         advanceTime(scheduler, 5);
         assertFalse(animateLed.isRunning(), "Command did not end after timeout");
 
-        // Run past 2.0 seconds → should finish
+        // Run past 10.0 seconds → should finish
         advanceTime(scheduler, 10);
         condition = () -> true;
         assertTrue(!animateLed.isRunning(), "Command did not end after timeout");

@@ -7,15 +7,16 @@ import edu.wpi.first.wpilibj.simulation.SimHooks;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class DistanceSensorTest {
+    DistanceSensor distanceSensor ;
     @Test
-    void testFullConstructor() {
-        DistanceSensor distanceSensor = new DistanceSensor(new DistanceSensorIOSim(new CANDeviceDetails(0)));
+    void testDistanceFullConstructor() {
+        distanceSensor = new DistanceSensor(new DistanceSensorIOSim(new CANDeviceDetails(0)));
         assertEquals(false, distanceSensor.getStatus());
     }
 
     @Test
     void testDistanceSensor(){
-        DistanceSensor distanceSensor = new DistanceSensor(new DistanceSensorIOSim(new CANDeviceDetails(0)));
+        distanceSensor = new DistanceSensor(new DistanceSensorIOSim(new CANDeviceDetails(0)));
         assertEquals(false, distanceSensor.getStatus());
         CommandScheduler scheduler = CommandScheduler.getInstance();
         // Run for 0.5 seconds → should still be running

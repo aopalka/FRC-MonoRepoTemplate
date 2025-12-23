@@ -12,18 +12,17 @@ import org.bobcatrobotics.Hardware.LedControllers.Animations.Breathe;
 import org.bobcatrobotics.Hardware.LedControllers.Animations.Blink;
 
 public class LedControllerTest {
-
+    LedControllerIO candle;
+    LedController leds;
     @Test
     void testFullConstructor() {
-        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
-        LedController leds = new LedController(candle);
+        candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
+        leds = new LedController(candle);
         assertEquals(8, leds.getCount());
     }
 
     @Test
     void testBreatheWithTimeoutAnimation() {
-        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
-        LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
         var animateLed = new Breathe(candle, new Color(255,255,255));
@@ -43,8 +42,6 @@ public class LedControllerTest {
     @Test
     void testBreatheUntilAnimation() {
         BooleanSupplier condition = () -> true;
-        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
-        LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
         var animateLed = new Breathe(candle, new Color(255,255,255));
@@ -69,8 +66,6 @@ public class LedControllerTest {
 
     @Test
     void testBlinkWithTimeoutAnimation() {
-        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
-        LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
         var animateLed = new Blink(candle, new Color(255,255,255),5);
@@ -90,8 +85,6 @@ public class LedControllerTest {
     @Test
     void testBlinkUntilAnimation() {
         BooleanSupplier condition = () -> true;
-        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
-        LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
         var animateLed = new Blink(candle, new Color(255,255,255),5);

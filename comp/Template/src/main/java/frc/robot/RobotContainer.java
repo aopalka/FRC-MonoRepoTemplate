@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -37,6 +38,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import org.bobcatrobotics.Commands.ActionFactory;
+import org.bobcatrobotics.Subsystems.AntiTippingLib.AntiTipping;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,6 +49,7 @@ import org.bobcatrobotics.Commands.ActionFactory;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final AntiTipping antiTipping;
   private Vision vision;
 
   // Controller
@@ -80,8 +83,12 @@ public class RobotContainer {
         drive = new Drive(new GyroIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {},
             new ModuleIO() {});
         break;
-
     }
+
+    antiTipping = new AntiTipping(() -> drive.getPitch(), () -> drive.getRoll(), 0.04, // kP
+        3.0, // tipping threshold (degrees)
+        2.5 // max correction speed (m/s)
+    );
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -120,13 +127,22 @@ public class RobotContainer {
         () -> -controller.getLeftX(), () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(new ActionFactory().singleAction("X-Command",()->drive.stopWithX(),drive));
+    controller.x()
+        .onTrue(new ActionFactory().singleAction("X-Command", () -> drive.stopWithX(), drive));
 
     // Reset gyro to 0° when B button is pressed
     controller.b()
-        .onTrue(new ActionFactory().singleAction("ZeroGyroCommand", 
+        .onTrue(new ActionFactory().singleAction("ZeroGyroCommand",
             () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
             drive).ignoringDisable(true));
+
+    // Antitipping
+    controller.leftBumper()
+        .whileTrue(new ActionFactory().continuousAction("DriveWithAntiTipping",
+            () -> DriveCommands.joystickDriveWithAntiTipping(drive, () -> -controller.getLeftY(),
+                () -> -controller.getLeftX(), () -> -controller.getRightX(), antiTipping),
+            () -> DriveCommands.joystickDriveWithAntiTipping(drive, () -> 0, () -> 0, () -> 0,
+                antiTipping)));
   }
 
   /**
@@ -140,5 +156,9 @@ public class RobotContainer {
 
   public Pose2d getPose2D() {
     return drive.getPose();
+  }
+
+  public void teleopPeriodic() {
+    antiTipping.calculate();
   }
 }

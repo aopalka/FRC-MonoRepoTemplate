@@ -329,4 +329,11 @@ public class Drive extends SubsystemBase {
         new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
         new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)};
   }
+
+  public double getPitch(){
+    return gyroIO.getPitch();
+  }
+  public double getRoll(){
+    return gyroIO.getRoll();
+  }
 }

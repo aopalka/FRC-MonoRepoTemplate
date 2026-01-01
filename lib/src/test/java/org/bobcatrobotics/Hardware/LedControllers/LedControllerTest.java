@@ -12,24 +12,32 @@ import org.bobcatrobotics.Hardware.LedControllers.Animations.Breathe;
 import org.bobcatrobotics.Hardware.LedControllers.Animations.Blink;
 
 public class LedControllerTest {
-    LedControllerIO candle;
-    LedController leds;
+
+
+    public LedControllerTest() {
+
+    }
+
     @Test
     void testFullConstructor() {
-        candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
-        leds = new LedController(candle);
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
+        LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
     }
 
     @Test
     void testBreatheWithTimeoutAnimation() {
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
+        LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
-        var animateLed = new Breathe(candle, new Color(255,255,255));
+        var animateLed = new Breathe(candle, new Color(255, 255, 255));
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.withTimeout(60);
         test.schedule();
-        CommandScheduler scheduler = CommandScheduler.getInstance();
+
         // Run for 0.5 seconds → should still be running
         advanceTime(scheduler, 0.5);
         assertFalse(animateLed.isRunning(), "Command ended too early");
@@ -42,9 +50,11 @@ public class LedControllerTest {
     @Test
     void testBreatheUntilAnimation() {
         BooleanSupplier condition = () -> true;
+        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
+        LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
-        var animateLed = new Breathe(candle, new Color(255,255,255));
+        var animateLed = new Breathe(candle, new Color(255, 255, 255));
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.untill(condition);
         test.schedule();
@@ -66,13 +76,15 @@ public class LedControllerTest {
 
     @Test
     void testBlinkWithTimeoutAnimation() {
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
+        LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
-        var animateLed = new Blink(candle, new Color(255,255,255),5);
+        var animateLed = new Blink(candle, new Color(255, 255, 255), 5);
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.withTimeout(60);
         test.schedule();
-        CommandScheduler scheduler = CommandScheduler.getInstance();
         // Run for 0.5 seconds → should still be running
         advanceTime(scheduler, 0.5);
         assertFalse(animateLed.isRunning(), "Command ended too early");
@@ -85,13 +97,15 @@ public class LedControllerTest {
     @Test
     void testBlinkUntilAnimation() {
         BooleanSupplier condition = () -> true;
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+        LedControllerIO candle = new LedSim(0, new LedStrip(8, 0, 7), StripTypeValue.RGBW);
+        LedController leds = new LedController(candle);
         assertEquals(8, leds.getCount());
 
-        var animateLed = new Blink(candle, new Color(255,255,255),5);
+        var animateLed = new Blink(candle, new Color(255, 255, 255), 5);
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.untill(condition);
         test.schedule();
-        CommandScheduler scheduler = CommandScheduler.getInstance();
         // Run for 0.5 seconds → should still be running
         advanceTime(scheduler, 0.5);
         assertFalse(animateLed.isRunning(), "Command ended too early");

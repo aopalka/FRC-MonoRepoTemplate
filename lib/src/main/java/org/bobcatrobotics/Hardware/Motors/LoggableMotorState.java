@@ -12,7 +12,7 @@ public class LoggableMotorState {
     private final String logPath;
 
     /**
-     * @param logKey AdvantageKit output key (e.g. "Shooter/State")
+     * @param logPath AdvantageKit output key (e.g. "Shooter/State")
      * @param initialState Initial enum value
      */
     public LoggableMotorState(String logPath, MotorState initialState) {

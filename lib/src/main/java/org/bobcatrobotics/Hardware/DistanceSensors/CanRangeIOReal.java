@@ -1,6 +1,8 @@
 package org.bobcatrobotics.Hardware.DistanceSensors;
 
 import org.bobcatrobotics.Util.CANDeviceDetails;
+
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.CANrange;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -36,7 +38,8 @@ public class CanRangeIOReal implements DistanceSensorIO {
      */
     public CanRangeIOReal(CANDeviceDetails details) {
         this.details = details;
-        sensor = new CANrange(details.id(), details.bus());
+        CANBus bus = new CANBus(details.bus());
+        sensor = new CANrange(details.id(), bus);
         sensorUnpluggedAlert =
                 new Alert(details.subsystemName() + " Can Range" + " Joystick unplugged!",
                         AlertType.kWarning);

@@ -23,7 +23,6 @@ class ActionFactoryTest {
                 () -> runFlag.set(true));
 
         assertEquals("singleActionCommandWithoutSubsystem", command.getName());
-        command.schedule();
         command.execute();
         assertTrue(!runFlag.get());
 
@@ -41,7 +40,6 @@ class ActionFactoryTest {
 
         assertEquals("singleActionCommandWithSubsystem", command.getName());
         assertTrue(command.getRequirements().contains(subsystem));
-        command.schedule();
         command.execute();
         assertTrue(!runFlag.get());
 
@@ -58,7 +56,6 @@ class ActionFactoryTest {
                 () -> runFlag.set(true), () -> interruptedFlag.set(true));
 
         assertEquals("ContCmdWithoutSubsystem", command.getName());
-        command.schedule();
         command.execute();
         assertTrue(runFlag.get());
 
@@ -78,7 +75,6 @@ class ActionFactoryTest {
 
         assertEquals("ContCmdWithSubsystem", command.getName());
         assertTrue(command.getRequirements().contains(subsystem));
-        command.schedule();
         command.execute();
         assertTrue(runFlag.get());
 

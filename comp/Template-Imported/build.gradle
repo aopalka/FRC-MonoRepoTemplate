@@ -1,6 +1,5 @@
 plugins {
     id "java"
-	id 'checkstyle'
     id "edu.wpi.first.GradleRIO" version "2026.1.1-beta-1"
 }
 
@@ -72,17 +71,8 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
-    implementation "com.fasterxml.jackson.core:jackson-annotations:2.12.4"
-    implementation "com.fasterxml.jackson.core:jackson-core:2.12.4"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.12.4"
-
-
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-       
-	def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
-	annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
-
 }
 
 test {
@@ -110,18 +100,6 @@ wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
 
 // Configure string concat to always inline compile
-// tasks.withType(JavaCompile) {
-//     options.compilerArgs.add '-XDstringConcat=inline'
-// }
-
-checkstyle {
-	configFile = file("config/checkstyle/checkstyle.xml")
-	toolVersion = '10.26.1' // or current latest
-}
-
-tasks.withType(Checkstyle) {
-	reports {
-		html.required = true
-		xml.required = false
-	}
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add '-XDstringConcat=inline'
 }

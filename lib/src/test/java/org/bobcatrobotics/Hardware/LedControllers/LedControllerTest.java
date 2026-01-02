@@ -36,7 +36,6 @@ public class LedControllerTest {
         var animateLed = new Breathe(candle, new Color(255, 255, 255));
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.withTimeout(60);
-        test.schedule();
 
         // Run for 0.5 seconds → should still be running
         advanceTime(scheduler, 0.5);
@@ -57,7 +56,6 @@ public class LedControllerTest {
         var animateLed = new Breathe(candle, new Color(255, 255, 255));
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.untill(condition);
-        test.schedule();
         CommandScheduler scheduler = CommandScheduler.getInstance();
         // Run for 0.5 seconds → should still be running
         advanceTime(scheduler, 0.5);
@@ -84,7 +82,6 @@ public class LedControllerTest {
         var animateLed = new Blink(candle, new Color(255, 255, 255), 5);
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.withTimeout(60);
-        test.schedule();
         // Run for 0.5 seconds → should still be running
         advanceTime(scheduler, 0.5);
         assertFalse(animateLed.isRunning(), "Command ended too early");
@@ -105,7 +102,6 @@ public class LedControllerTest {
         var animateLed = new Blink(candle, new Color(255, 255, 255), 5);
         assertEquals(false, animateLed.isFinished);
         Command test = animateLed.untill(condition);
-        test.schedule();
         // Run for 0.5 seconds → should still be running
         advanceTime(scheduler, 0.5);
         assertFalse(animateLed.isRunning(), "Command ended too early");

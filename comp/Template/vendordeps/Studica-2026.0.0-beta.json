@@ -1,25 +1,25 @@
 {
-    "fileName": "libgrapplefrc2025.json",
-    "name": "libgrapplefrc",
-    "version": "2025.0.8",
-    "frcYear": "2025",
-    "uuid": "8ef3423d-9532-4665-8339-206dae1d7168",
+    "fileName": "Studica-2026.0.0-beta.json",
+    "name": "Studica",
+    "version": "2026.0.0-beta",
+    "frcYear": "2026",
+    "uuid": "cb311d09-36e9-4143-a032-55bb2b94443b",
     "mavenUrls": [
-        "https://storage.googleapis.com/grapple-frc-maven"
+        "https://dev.studica.com/maven/release/2026/"
     ],
-    "jsonUrl": "https://storage.googleapis.com/grapple-frc-maven/libgrapplefrc2025.json",
+    "jsonUrl": "https://dev.studica.com/maven/release/2026/json/Studica-2026.0.0-beta.json",
     "javaDependencies": [
         {
-            "groupId": "au.grapplerobotics",
-            "artifactId": "libgrapplefrcjava",
-            "version": "2025.0.8"
+            "groupId": "com.studica.frc",
+            "artifactId": "Studica-java",
+            "version": "2026.0.0-beta"
         }
     ],
     "jniDependencies": [
         {
-            "groupId": "au.grapplerobotics",
-            "artifactId": "libgrapplefrcdriver",
-            "version": "2025.0.8",
+            "groupId": "com.studica.frc",
+            "artifactId": "Studica-driver",
+            "version": "2026.0.0-beta",
             "skipInvalidPlatforms": true,
             "isJar": false,
             "validPlatforms": [
@@ -34,12 +34,12 @@
     ],
     "cppDependencies": [
         {
-            "groupId": "au.grapplerobotics",
-            "artifactId": "libgrapplefrccpp",
-            "version": "2025.0.8",
-            "libName": "grapplefrc",
+            "groupId": "com.studica.frc",
+            "artifactId": "Studica-cpp",
+            "version": "2026.0.0-beta",
+            "libName": "Studica",
             "headerClassifier": "headers",
-            "sharedLibrary": true,
+            "sharedLibrary": false,
             "skipInvalidPlatforms": true,
             "binaryPlatforms": [
                 "windowsx86-64",
@@ -51,12 +51,12 @@
             ]
         },
         {
-            "groupId": "au.grapplerobotics",
-            "artifactId": "libgrapplefrcdriver",
-            "version": "2025.0.8",
-            "libName": "grapplefrcdriver",
+            "groupId": "com.studica.frc",
+            "artifactId": "Studica-driver",
+            "version": "2026.0.0-beta",
+            "libName": "StudicaDriver",
             "headerClassifier": "headers",
-            "sharedLibrary": true,
+            "sharedLibrary": false,
             "skipInvalidPlatforms": true,
             "binaryPlatforms": [
                 "windowsx86-64",

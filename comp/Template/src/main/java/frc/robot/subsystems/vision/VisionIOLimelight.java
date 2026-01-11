@@ -1,4 +1,9 @@
-
+// Copyright (c) 2021-2026 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
 
 package frc.robot.subsystems.vision;
 
@@ -48,7 +53,8 @@ public class VisionIOLimelight implements VisionIO {
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-    // Update connection status based on whether an update has been seen in the last 250ms
+    // Update connection status based on whether an update has been seen in the last
+    // 250ms
     inputs.connected =
         ((RobotController.getFPGATime() - latencySubscriber.getLastChange()) / 1000) < 250;
 
@@ -67,9 +73,7 @@ public class VisionIOLimelight implements VisionIO {
     Set<Integer> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
     for (var rawSample : megatag1Subscriber.readQueue()) {
-      if (rawSample.value.length == 0) {
-        continue;
-      }
+      if (rawSample.value.length == 0) {continue;}
       for (int i = 11; i < rawSample.value.length; i += 7) {
         tagIds.add((int) rawSample.value[i]);
       }
@@ -81,7 +85,8 @@ public class VisionIOLimelight implements VisionIO {
               // 3D pose estimate
               parsePose(rawSample.value),
 
-              // Ambiguity, using only the first tag because ambiguity isn't applicable for multitag
+              // Ambiguity, using only the first tag because ambiguity isn't applicable for
+              // multitag
               rawSample.value.length >= 18 ? rawSample.value[17] : 0.0,
 
               // Tag count
@@ -94,9 +99,7 @@ public class VisionIOLimelight implements VisionIO {
               PoseObservationType.MEGATAG_1));
     }
     for (var rawSample : megatag2Subscriber.readQueue()) {
-      if (rawSample.value.length == 0) {
-        continue;
-      }
+      if (rawSample.value.length == 0) {continue;}
       for (int i = 11; i < rawSample.value.length; i += 7) {
         tagIds.add((int) rawSample.value[i]);
       }

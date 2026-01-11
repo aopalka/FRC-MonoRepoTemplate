@@ -1,22 +1,14 @@
-// Copyright 2021-2025 FRC 6328
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// version 3 as published by the Free Software Foundation or
-// available in the root directory of this project.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
 
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.generated.TunerConstants;
@@ -29,24 +21,27 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.DoubleSupplier;
 
 /**
- * Provides an interface for asynchronously reading high-frequency measurements to a set of queues.
+ * Provides an interface for asynchronously reading high-frequency measurements
+ * to a set of queues.
  *
- * <p>This version is intended for Phoenix 6 devices on both the RIO and CANivore buses. When using
- * a CANivore, the thread uses the "waitForAll" blocking method to enable more consistent sampling.
- * This also allows Phoenix Pro users to benefit from lower latency between devices using CANivore
+ * <p>
+ * This version is intended for Phoenix 6 devices on both the RIO and CANivore
+ * buses. When using
+ * a CANivore, the thread uses the "waitForAll" blocking method to enable more
+ * consistent sampling.
+ * This also allows Phoenix Pro users to benefit from lower latency between
+ * devices using CANivore
  * time synchronization.
  */
 public class PhoenixOdometryThread extends Thread {
-  private final Lock signalsLock =
-      new ReentrantLock(); // Prevents conflicts when registering signals
+  private final Lock signalsLock = new ReentrantLock(); // Prevents conflicts when registering signals
   private BaseStatusSignal[] phoenixSignals = new BaseStatusSignal[0];
   private final List<DoubleSupplier> genericSignals = new ArrayList<>();
   private final List<Queue<Double>> phoenixQueues = new ArrayList<>();
   private final List<Queue<Double>> genericQueues = new ArrayList<>();
   private final List<Queue<Double>> timestampQueues = new ArrayList<>();
 
-  private static boolean isCANFD =
-      new CANBus(TunerConstants.DrivetrainConstants.CANBusName).isNetworkFD();
+  private static boolean isCANFD = TunerConstants.kCANBus.isNetworkFD();
   private static PhoenixOdometryThread instance = null;
 
   public static PhoenixOdometryThread getInstance() {

@@ -116,13 +116,24 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     // Default command, normal field-relative drive
-    drive.setDefaultCommand(DriveCommands.joystickDrive(drive, () -> -controller.getLeftY(),
-        () -> -controller.getLeftX(), () -> -controller.getRightX()));
+    drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive,
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX()));
 
     // Lock to 0° when A button is held
-    controller.a().whileTrue(DriveCommands.joystickDriveAtAngle(drive, () -> -controller.getLeftY(),
-        () -> -controller.getLeftX(), () -> new Rotation2d()));
+    controller
+        .a()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -controller.getLeftY(),
+                () -> -controller.getLeftX(),
+                () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
     controller.x()
@@ -131,7 +142,7 @@ public class RobotContainer {
     // Reset gyro to 0° when B button is pressed
     controller.b()
         .onTrue(new ActionFactory().singleAction("ZeroGyroCommand",
-            () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+            () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
             drive).ignoringDisable(true));
 
     // Antitipping

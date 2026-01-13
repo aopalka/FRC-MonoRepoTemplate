@@ -14,6 +14,7 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
 // import frc.robot.subsystems.roller.RollerSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -36,6 +37,8 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import org.bobcatrobotics.Commands.ActionFactory;
+import org.bobcatrobotics.GameSpecific.Rebuilt.HubData;
+import org.bobcatrobotics.GameSpecific.Rebuilt.HubUtil;
 import org.bobcatrobotics.Subsystems.AntiTippingLib.AntiTipping;
 
 /**
@@ -55,6 +58,8 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  private final HubUtil hub;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -107,6 +112,8 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    hub = new HubUtil();
   }
 
   /**
@@ -169,5 +176,8 @@ public class RobotContainer {
 
   public void teleopPeriodic() {
     antiTipping.calculate();
+    HubData hubData = hub.getHubData();
+    Logger.recordOutput("Hub/Status", hubData.owner);
+    Logger.recordOutput("Hub/TimeRemaing", hubData.timeRemaining);
   }
 }
